@@ -1,3 +1,5 @@
 # terror_latin_america
 
-This is my project on terrorism in Latin America. 
+For my creative project I wanted to analyze Guatemala's and El Salvador's terrorist attacks. Considering the Tattooed Soldiers discusses in great lengths the Civil Wars happening in both countries, I decided to analyze the congruent information we have. I gathered my data from Kaggle, link provided below, where they gather the information from Global Terrorism Database. Since the data can sometimes be limited due to lack of record documentation in Latin American, I was also gather some information from my parents who lived through this crisis. 
+
+Link: <https://www.kaggle.com/code/josutk/identifying-patterns-of-terrorist-attacks/notebook>
