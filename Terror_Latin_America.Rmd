@@ -2,13 +2,7 @@
 title: "Terrorism in Guatemala and El Salvador (1970-2017)"
 author: "Chelsea Linares"
 date: "2024-03-13"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    code_folding: hide
-  pdf_document:
-    toc: true
+output: github_document
 ---
 
 ```{r image, echo=FALSE, fig.align='center'}
@@ -27,18 +21,12 @@ library(ggplot2)
 library(forcats)
 library(janitor)
 library(corrr)
-
-
 ```
 
-## Introduction
 
-For my creative project I wanted to analyze Guatemala's and El Salvador's terrorist attacks. Considering the Tattooed Soldiers discusses in great lengths the Civil Wars happening in both countries, I decided to analyze the congruent information we have. I gathered my data from Kaggle, link provided below, where they gather the information from Global Terrorism Database. Since the data can sometimes be limited due to lack of record documentation in Latin American, I was also gather some information from my parents who lived through this crisis. 
-
-<https://www.kaggle.com/code/josutk/identifying-patterns-of-terrorist-attacks/notebook>
 
 ```{r}
-GT<-read.csv("globalterrorismdb_0718dist.csv")
+GT<-read.csv("~/downloads/globalterrorismdb_0718dist.csv")
 ```
 
 ## Clean-Up Data
@@ -206,9 +194,7 @@ GT %>%
 
 The most common weapon used in Guatemala is firearms, with explosives coming in second. FP-31 seems like explosives was their weapon of choice, 76.5% of their attacks were explosive attacks. All manners of hurting people are awful, but to choose explosives, I think there's an extra layer of anger and resentment to use that. 
 
-## Conclusion
 
-Looking at data visuals of some of the most horrific crimes may easily desensitize individuals. This is why I chose a small quote from the Tattooed Soldier, a fictional novel about the Civil Wars in Guatemala, to leave off: "This was the worst thing to remember [from the war], the sounds children make when they are dying. The flutter in the throat. Crying because they're bleeding all over the floor and it doesn't make sense." (p.65)
 
 
 
