@@ -1,8 +1,3 @@
-Conclusion
-================
-Chelsea Linares
-2024-04-15
-
 ## Conclusion
 
 Looking at data visuals of some of the most horrific crimes may easily
