@@ -283,5 +283,5 @@ GT %>%
 
 In Guatemala, the most common weapon used in attacks was firearms, with explosives
 coming in second. The FP-31 group, in particular, seems to have favored explosives-76.5% of their attacks involved them. While all forms of
-violence are horrific, choosing explosives feels particularly charged, to me it suggest an
+violence are horrific, choosing explosives feels particularly charged, to me it suggests an
 extra layer of anger and resentment behind their actions.
