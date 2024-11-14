@@ -179,8 +179,8 @@ them contributing to 3330 recorded attacks. While both El Salvador and
 Guatemala had a FMLN group, it appears to have been much more active in El
 Salvador. My parents, who grew up in El Salvador around that time
 described it as a bloodbath-many families fled, 
-only to be shot in front of their children. I imagine it was similar in
-Guatemala especially considering the imagery depicted in *The Tattooed
+only to be shot in front of their children. I imagine the situation in
+Guatemala is similar especially considering the imagery depicted in *The Tattooed
 Soldier*. Thus, the fact that only 5 FMLN attacks are recorded in Guatemala
 leads me to believe this data might be skewed or incomplete.
 
@@ -225,17 +225,15 @@ GT %>%
 
 ![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-This distribution is incredibly terrifying especially since February 28
-Popular League and FARN held hostages or kidnapped people for over half
-of their attacks. It seems they targeted innocent civilians to get what
+This distribution is incredibly terrifying, especially since February 28
+Popular League and FARN held hostages or kidnapped people in more than half
+of their attacks. It seems they primarily targeted innocent civilians to get what
 they wanted.
 
-However, it further shocked me to see FMLN only kidnapped people 4.9% of
-the time. I was under the impression this was one of their main forms of
-attack. My parents claimed the FMLN would kidnapped children and force
-them to join their army or they would be killed. They stated from what
-they saw the military didn’t draft children, just adults but the FMLN
-did.
+What shocked me further was discovering FMLN only kidnapped people 4.9% of
+the time. I was under the impression kidnapping was one of their primarily attack methods. My parents claimed the FMLN would often kidnap children, forcing
+them to join their army or face execution. From what
+they saw the military only drafted adults, while the FMLN targeted children for recruitment.
 
 ### Comparing Same Terrorist Group in Each Country
 
@@ -259,14 +257,14 @@ ggplot(Sums,aes(x=country_txt,y=Percent,fill=attacktype1))+geom_bar(stat='identi
 
 ![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
-It appears Death Squad was equally active in both Central American
-countries and they continuously used the same types of attacks.
-Left-Wing Terrorist and Left-Wing Guerrillas both used different attacks
-based on the country. However despite being 2 separate groups they \[L-W
-Guerrillas & L-W Terrorist\] use similar attacks in the same country. I
-believe this is due to the different environments, groups would commit
-attacks that would have a bigger impact in the country and among the
-people. FMLN is hard to discuss considering there’s great discrepancis
+It appears Death Squad was equally active in both
+countries, continuously using the same types of attacks.
+However, Left-Wing Terrorist and Left-Wing Guerrillas both used different attacks
+depending on the country. Despite being 2 separate groups, they (L-W
+Guerrillas & L-W Terrorist) used similar attacks in the same country. I
+believe this is due to the different environments-groups likely tailored their attacks to have a stronger impact on local population. 
+
+The FMLN is hard to discuss considering there’s great discrepancies
 in the number of attacks.
 
 ### Distribution of Weapon Types Used in Guatemala
@@ -283,8 +281,7 @@ GT %>%
 
 ![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-The most common weapon used in Guatemala is firearms, with explosives
-coming in second. FP-31 seems like explosives was their weapon of
-choice, 76.5% of their attacks were explosive attacks. All manners of
-hurting people are awful, but to choose explosives, I think there’s an
-extra layer of anger and resentment to use that.
+In Guatemala, the most common weapon used in attacks was firearms, with explosives
+coming in second. The FP-31 group, in particular, seems to have favored explosives-76.5% of their attacks involved them. While all forms of
+violence are horrific, choosing explosives feels particularly charged, to me it suggest an
+extra layer of anger and resentment behind their actions.
