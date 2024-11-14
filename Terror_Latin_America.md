@@ -116,7 +116,7 @@ during the incident.
 `kidhijcountry`: the country in which the hostage taking or hijacking
 was resolved or ended.
 
-`hostkidoutcome_txt`:the outcome of hostages or kidnap victims if there
+`hostkidoutcome_txt`: the outcome of hostages or kidnap victims if there
 are any during the attacks.
 
 ## Visualizations
