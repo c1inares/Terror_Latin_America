@@ -11,13 +11,13 @@ GT<-read.csv("~/downloads/globalterrorismdb_0718dist.csv")
 
 ## Clean-Up Data
 
-Our data is nationwide so we will tidy it to only display attacks that
-happened in Guatemala and El Salvador. Also, there’s around 135
-variables, many of which are redundant or unnecessary for our analysis
-so we will scrape them. Just to make our visuals clearer, I merged some
-of the terrorist groups together into an ‘Other’ category because there
-were few times this group attacked compared to other groups. At the end,
-we remain with 26 variables.
+Our dataset is global so we will tidy it to only display attacks that
+occurred in Guatemala and El Salvador. Since there is around 135
+variables, many of which are redundant or unnecessary for our analysis,
+we will remove them. To make our visuals clearer, I merged some
+of the smaller terrorist groups together into an ‘Other’ category, as
+these groups had far fewer attacks compared to others. After these adjustments,
+we will be left with 26 crucial variables.
 
 ``` r
 #only use data from Guatemala and El Salvador
@@ -171,20 +171,18 @@ GT%>%
     ## 12                                             Unknown 1413
     ## 13                                               Other   52
 
-With this bar graph, we see that from 1970-2017 there were significantly
-more attacks in El Salvador than Guatemala. El Salvador had more than
-double the amount of attacks. Its good to know because now when we
-compare country differences using percentages.
+This bar graph shows that from 1970 to 2017, El Salvador experienced significantly more attacks than Guatemala, with over
+double the amount of recorded incidents. This is important because it highlights the need to compare the data using percentages.
 
-The terrorist group FMLN drove El Salvador’s attacks exponentially with
-them contributing to 3330 recorded attacks. Though, both El Salvador and
-Guatemala had an FMLN group, it seems to have been more full force in El
-Salvador. My parents grew up in El Salvador around that time and they
-described it as a blood bath. Many parents ran away with their families
-only to be shot in front of their kids. I imagine it was similar in
-Guatemala especially considering the imagery depicted in the Tattooed
-Soldier. Thus, seeing there’s only 5 recorded FMLN attacks in Guatemala
-leads me to believe this data might be heavily skewed.
+The FMLN drove El Salvador’s attacks exponentially with
+them contributing to 3330 recorded attacks. While both El Salvador and
+Guatemala had a FMLN group, it appears to have been much more active in El
+Salvador. My parents, who grew up in El Salvador around that time
+described it as a bloodbath-many families fled, 
+only to be shot in front of their children. I imagine it was similar in
+Guatemala especially considering the imagery depicted in *The Tattooed
+Soldier*. Thus, the fact that only 5 FMLN attacks are recorded in Guatemala
+leads me to believe this data might be skewed or incomplete.
 
 ### Correlation Between Variables
 
