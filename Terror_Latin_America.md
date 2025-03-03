@@ -11,13 +11,13 @@ GT<-read.csv("~/downloads/globalterrorismdb_0718dist.csv")
 
 ## Clean-Up Data
 
-Our dataset is global so we will tidy it to only display attacks that
-occurred in Guatemala and El Salvador. Since there is around 135
-variables, many of which are redundant or unnecessary for our analysis,
-we will remove them. To make our visuals clearer, I merged some
-of the smaller terrorist groups together into an ‘Other’ category, as
-these groups had far fewer attacks compared to others. After these adjustments,
-we will be left with 26 crucial variables.
+Our data is nationwide so we will tidy it to only display attacks that
+happened in Guatemala and El Salvador. Also, there’s around 135
+variables, many of which are redundant or unnecessary for our analysis
+so we will scrape them. Just to make our visuals clearer, I merged some
+of the terrorist groups together into an ‘Other’ category because there
+were few times this group attacked compared to other groups. At the end,
+we remain with 26 variables.
 
 ``` r
 #only use data from Guatemala and El Salvador
@@ -25,22 +25,35 @@ we will be left with 26 crucial variables.
 GT<-GT %>%
   filter(region=='2', country_txt=='Guatemala'|country_txt=='El Salvador')
 
-#removing columns
+#removing columns with less than 10% data
 GT<-GT[ , colSums(is.na(GT))<.1] 
 
-#factor
+#only keep top 15 terrorist groups, the rest lump into an other category
 GT$gname<- fct_lump_min(GT$gname, min=15, other_level = "Other")
 
 GT<-GT[c(1,2,3,4,6,8,9,12,13,23,24,26,27,30,31,33,45,57,58,59,66,67,68,70,72,74)] #predictors to keep
-#only 28 variables remaining
 
-#turn into characters
-GT$eventid<-as.character(GT$eventid)
-GT$imonth<-as.character(GT$imonth)
-GT$iyear<-as.character(GT$iyear)
-GT$iday<-as.character(GT$iday)
-GT$country<-as.character(GT$country)
-GT$ishostkid<-as.character(GT$ishostkid)
+#turn into characters and factor
+GT$eventid<-as.factor(GT$eventid)
+GT$imonth<-as.factor(GT$imonth)
+GT$iyear<-as.factor(GT$iyear)
+GT$iday<-as.factor(GT$iday)
+GT$extended<-as.factor(GT$extended)
+GT$country<-as.factor(GT$country)
+GT$country_txt<-as.character(GT$country_txt)
+GT$provstate<-as.character(GT$provstate)
+GT$city<-as.character(GT$city)
+GT$multiple<-as.factor(GT$multiple)
+GT$success<-as.factor(GT$success)
+GT$attacktype1<-as.factor(GT$attacktype1)
+GT$attacktype1_txt<-as.character(GT$attacktype1_txt)
+GT$targtype1<-as.factor(GT$targtype1)
+GT$targtype1_txt<-as.character(GT$targtype1_txt)
+GT$gname<-as.factor(GT$gname)
+GT$weaptype1<-as.factor(GT$weaptype1)
+GT$property<-as.factor(GT$property)
+GT$ishostkid<-as.factor(GT$ishostkid)
+GT$kidhijcountry<-as.character(GT$kidhijcountry)
 ```
 
 ### Defining our Variables
@@ -121,14 +134,34 @@ are any during the attacks.
 
 ## Visualizations
 
+Let’s do a chi-square test to see if the attack frequencies between
+Guatemala and El Salvador are proportionate.
+
+``` r
+# chi-square test
+GS<-table(GT$country)
+chisq.test(GS)
+```
+
+    ## 
+    ##  Chi-squared test for given probabilities
+    ## 
+    ## data:  GS
+    ## X-squared = 1450.9, df = 1, p-value < 2.2e-16
+
+Since the p-value \> .05, we reject the null hypothesis. This indicates
+there is a significant difference in the frequency of attacks between
+both countries. Let’s dive deeper and visualize the attack frequencies
+for both countries.
+
 ### Distribuation of Attacks
 
 ``` r
 GT %>%
-ggplot(aes(country_txt))+geom_bar(fill=c('#56B4E9', '#009E73'))+labs(y="Number of Attacks",x="Country",title="Number of Attacks in each Country")
+ggplot(aes(country_txt))+geom_bar(fill=c('#56B4E9', '#009E73'))+labs(y="Number of Attacks",x="Country",title="Number of Attacks: El Salvador vs. Guatemala")
 ```
 
-![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
 GT%>%
@@ -171,69 +204,68 @@ GT%>%
     ## 12                                             Unknown 1413
     ## 13                                               Other   52
 
-This bar graph shows that from 1970 to 2017, El Salvador experienced significantly more attacks than Guatemala, with over
-double the amount of recorded incidents. This is important because it highlights the need to compare the data using percentages.
+With this bar graph, we see that from 1970-2017 there were significantly
+more attacks in El Salvador than Guatemala. El Salvador had more than
+double the amount of attacks. Its good to know because now when we
+compare country differences using percentages.
 
-The FMLN drove El Salvador’s attacks exponentially with
-them contributing to 3330 recorded attacks. While both El Salvador and
-Guatemala had a FMLN group, it appears to have been much more active in El
-Salvador. My parents, who grew up in El Salvador around that time
-described it as a bloodbath-many families fled, 
-only to be shot in front of their children. I imagine the situation in
-Guatemala is similar especially considering the imagery depicted in *The Tattooed
-Soldier*. Thus, the fact that only 5 FMLN attacks are recorded in Guatemala
-leads me to believe this data might be skewed or incomplete.
+The terrorist group FMLN drove El Salvador’s attacks exponentially with
+them contributing to 3330 recorded attacks. Though, both El Salvador and
+Guatemala had an FMLN group, it seems to have been more full force in El
+Salvador. My parents grew up in El Salvador around that time and they
+described it as a blood bath. Many parents ran away with their families
+only to be shot in front of their kids. I imagine it was similar in
+Guatemala especially considering the imagery depicted in *The Tattooed
+Soldier*. Thus, seeing there’s only 5 recorded FMLN attacks in Guatemala
+leads me to believe this data might be heavily skewed.
 
-### Correlation Between Variables
-
-``` r
-#correlation between predictors
-cor_GT<- GT %>%
-  correlate()
-```
-
-    ## Non-numeric variables removed from input: `eventid`, `iyear`, `imonth`, `iday`, `country`, `country_txt`, `provstate`, `city`, `attacktype1_txt`, `targtype1_txt`, `target1`, `gname`, `weaptype1_txt`, `weapsubtype1_txt`, `weapdetail`, `propextent_txt`, `ishostkid`, `kidhijcountry`, and `hostkidoutcome_txt`
-    ## Correlation computed with
-    ## • Method: 'pearson'
-    ## • Missing treated using: 'pairwise.complete.obs'
-
-``` r
-  stretch(cor_GT) %>%
-  ggplot(aes(x,y,fill=r))+geom_tile() +
-  geom_text(aes(label = as.character(fashion(r))))
-```
-
-![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
-
-Through this graph, we see the type of weapon used is strongly
-correlated with the type of attack. This is to be expected considering
-depending on the attack they want to enact, it determines the kinds of
-weapons they can use. However, I was not expecting the target victim to
-correlate with multiple. This means that if victims were attacked for
-specific reasons, it could determine whether this attack is part of a
-multiple incident.
-
-### Bar Plot on Victims who were Kidnapped
+### Kidnapping Incidents Across Terrorist Groups
 
 ``` r
 GT %>% 
   count(gname, ishostkid)%>%
   group_by(gname) %>% 
   mutate(count=prop.table(n)*100) %>%
-  ggplot(aes(x=gname, y=count, fill=ishostkid))+geom_bar(stat="identity")+ geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")),position=position_stack(vjust = .5))+theme_bw()+labs(y="Percentage",x="Terrorist Groups", )+coord_flip()+scale_fill_discrete(name="Victim Kidnapped", breaks=c(0,1), labels=c("No", "Yes"))
+  ggplot(aes(x=gname, y=count, fill=ishostkid))+geom_bar(stat="identity")+ geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")),position=position_stack(vjust = .5))+theme_bw()+labs(y="Percentage",x="Terrorist Groups", title="Percentage of Victims Kidnapped by Terrorist Groups") + coord_flip() +scale_fill_discrete(name="Victim Kidnapped", breaks=c(0,1), labels=c("No", "Yes"))
 ```
 
 ![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-This distribution is incredibly terrifying, especially since February 28
-Popular League and FARN held hostages or kidnapped people in more than half
-of their attacks. It seems they primarily targeted innocent civilians to get what
+This distribution is incredibly terrifying especially since February 28
+Popular League and FARN held hostages or kidnapped people for over half
+of their attacks. It seems they targeted innocent civilians to get what
 they wanted.
 
-What shocked me further was discovering FMLN only kidnapped people 4.9% of
-the time. I was under the impression kidnapping was one of their primarily attack methods. My parents claimed the FMLN would often kidnap children, forcing
-them to join their army or face execution. From what
-they saw the military only drafted adults, while the FMLN targeted children for recruitment.
+However, it further shocked me to see FMLN only kidnapped people 4.9% of
+the time. I was under the impression this was one of their main forms of
+attack. My parents claimed the FMLN would kidnapped children and force
+them to join their army or they would be killed. They stated from what
+they saw the military didn’t draft children, just adults but the FMLN
+did.
+
+### Exploring the Weapon Types Used in Guatemala
+
+``` r
+GT %>% 
+  filter(country_txt=='Guatemala')%>%
+  count(gname, weaptype1)%>%
+  group_by(gname) %>% 
+  mutate(count=prop.table(n)*100) %>%
+  ggplot(aes(x=gname, y=count, fill=weaptype1))+geom_bar(stat='identity')+    
+  geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")),position=position_stack(vjust = .5))+
+  labs(y="Percentage",x="Terrorist Groups",title="Weaponry Used in Terrorist Attacks in Guatemala ")+coord_flip()+scale_fill_discrete(name="Weapon Types", breaks=c(10, 11,13, 5, 6,8,9), labels=c("Vehicle", "Sabotage Equipment", "Unknown", "Firearms", "Explosives","Incendiary", "Melee"))+scale_fill_viridis(discrete=TRUE)
+```
+
+    ## Scale for fill is already present.
+    ## Adding another scale for fill, which will replace the existing scale.
+
+![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+The most common weapon used in Guatemala is firearms, with explosives
+coming in second. FP-31 seems like explosives was their weapon of
+choice, 76.5% of their attacks were explosive attacks. All manners of
+hurting people are awful, but to choose explosives, I think there’s an
+extra layer of anger and resentment to use that.
 
 ### Comparing Same Terrorist Group in Each Country
 
@@ -250,38 +282,55 @@ GT %>% mutate(country_txt=factor(country_txt, levels = c("Guatemala","El Salvado
     ## using the `.groups` argument.
 
 ``` r
-#Plot
-Sums<-Sums[ rowSums(is.na(Sums))<.1,] 
-ggplot(Sums,aes(x=country_txt,y=Percent,fill=attacktype1))+geom_bar(stat='identity',position = position_stack())+facet_wrap(.~gname)+geom_text(aes(label=Lab),position = position_stack(vjust = .5),size=2)+labs(x="Country", title = "Distribution of Terrorist Groups Based on Each Country")
-```
-
-![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
-
-It appears Death Squad was equally active in both
-countries, continuously using the same types of attacks.
-However, Left-Wing Terrorist and Left-Wing Guerrillas both used different attacks
-depending on the country. Despite being 2 separate groups, they (L-W
-Guerrillas & L-W Terrorist) used similar attacks in the same country. I
-believe this is due to the different environments-groups likely tailored their attacks to have a stronger impact on local population. 
-
-The FMLN is hard to discuss considering there’s great discrepancies
-in the number of attacks.
-
-### Distribution of Weapon Types Used in Guatemala
-
-``` r
-GT$weaptype1<-as.character(GT$weaptype1)
-GT %>% 
-  filter(country_txt=='Guatemala')%>%
-  count(gname, weaptype1)%>%
-  group_by(gname) %>% 
-  mutate(count=prop.table(n)*100) %>%
-  ggplot(aes(x=gname, y=count, fill=weaptype1))+geom_bar(stat='identity')+  geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")),position=position_stack(vjust = .5))+labs(y="Percentage",x="Group who Attacked",title="Weapon Types Used In Attacks In Guatemala ")+coord_flip()+scale_fill_discrete(name="Weapon Types", breaks=c(10, 11,13, 5, 6,8,9), labels=c("Vehicle", "Sabotage Equipment", "Unknown", "Firearms", "Explosives","Incendiary", "Melee"))
+Sums<-Sums[rowSums(is.na(Sums))<.1,] 
+#plot
+ggplot(Sums,aes(x=country_txt,y=Percent,fill=attacktype1))+geom_bar(stat='identity',position = position_stack())+facet_wrap(.~gname)+geom_text(aes(label=Lab),position = position_stack(vjust = .5),size=2)+labs(x="Country", title = "Distribution of Terrorist Groups Based on Each Country")+  scale_color_viridis(discrete = TRUE) 
 ```
 
 ![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-In Guatemala, the most common weapon used in attacks was firearms, with explosives
-coming in second. The FP-31 group, in particular, seems to have favored explosives-76.5% of their attacks involved them. While all forms of
-violence are horrific, choosing explosives feels particularly charged, to me it suggests an
-extra layer of anger and resentment behind their actions.
+It appears Death Squad was equally active in both Central American
+countries and they continuously used the same types of attacks.
+Left-Wing Terrorist and Left-Wing Guerrillas both used different attacks
+based on the country. However despite being 2 separate groups they \[L-W
+Guerrillas & L-W Terrorist\] use similar attacks in the same country. I
+believe this is due to the different environments, groups would commit
+attacks that would have a bigger impact in the country and among the
+people. FMLN is hard to discuss considering there’s great discrepancies
+in the number of attacks.
+
+### Terrorist Attacks over Time
+
+``` r
+GT2 <- GT %>%
+  group_by(iyear, imonth, country) %>%
+  summarise(attack_count = n(), .groups = 'drop') %>%
+ mutate(year_month = as.Date(paste(iyear, imonth,"01", sep = "-"))) # create a date column
+
+#turn binary country into text
+GT2$country<-factor(GT2$country,levels = c(61, 83), labels = c("El Salvador", "Guatemala"))
+
+#plot the time series
+ggplot(GT2, aes(x = year_month, y = attack_count, color = country, group = country)) +
+  geom_line(size = 1) +  
+  labs(
+    title = "Monthly Frequency of Terrorist Attacks",
+    x = "Year",
+    y = "Number of Attacks"
+  )  + theme_minimal()+
+  scale_x_date(date_labels = "%Y", date_breaks = "1 year") + 
+  scale_color_manual(values=c("El Salvador"="#56B4E9","Guatemala"="#009E73")) +
+  guides(color = guide_legend(title = "Country")) +  # name the legend
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+    ## ℹ Please use `linewidth` instead.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## Warning: Removed 1 row containing missing values or values outside the scale range
+    ## (`geom_line()`).
+
+![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
