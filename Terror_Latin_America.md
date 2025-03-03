@@ -227,8 +227,7 @@ GT %>%
   count(gname, ishostkid)%>%
   group_by(gname) %>% 
   mutate(count=prop.table(n)*100) %>%
-  ggplot(aes(x=gname, y=count, fill=ishostkid))+geom_bar(stat="identity")+     geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")),                                       position=position_stack(vjust = .5)) + theme_bw() +
-  labs(y="Percentage",x="Terrorist Groups", title="Percentage of Victims Kidnapped by Terrorist Groups") + 
+  ggplot(aes(x=gname, y=count, fill=ishostkid)) + geom_bar(stat="identity") +  geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")), position=position_stack(vjust = .5)) + theme_bw() + labs(y="Percentage",x="Terrorist Groups", title="Percentage of Victims Kidnapped by Terrorist Groups") + 
   coord_flip() +
   scale_fill_discrete(name="Victim Kidnapped", breaks=c(0,1), labels=c("No", "Yes"))
 ```
