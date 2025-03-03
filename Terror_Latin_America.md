@@ -226,7 +226,10 @@ GT %>%
   count(gname, ishostkid)%>%
   group_by(gname) %>% 
   mutate(count=prop.table(n)*100) %>%
-  ggplot(aes(x=gname, y=count, fill=ishostkid))+geom_bar(stat="identity")+ geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")),position=position_stack(vjust = .5))+theme_bw()+labs(y="Percentage",x="Terrorist Groups", title="Percentage of Victims Kidnapped by Terrorist Groups") + coord_flip() +scale_fill_discrete(name="Victim Kidnapped", breaks=c(0,1), labels=c("No", "Yes"))
+  ggplot(aes(x=gname, y=count, fill=ishostkid))+geom_bar(stat="identity")+     geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")),                                       position=position_stack(vjust = .5)) + theme_bw() +
+  labs(y="Percentage",x="Terrorist Groups", title="Percentage of Victims Kidnapped by Terrorist Groups") + 
+  coord_flip() +
+  scale_fill_discrete(name="Victim Kidnapped", breaks=c(0,1), labels=c("No", "Yes"))
 ```
 
 ![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
@@ -252,8 +255,10 @@ GT %>%
   group_by(gname) %>% 
   mutate(count=prop.table(n)*100) %>%
   ggplot(aes(x=gname, y=count, fill=weaptype1))+geom_bar(stat='identity')+    
-  geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")),position=position_stack(vjust = .5))+
-  labs(y="Percentage",x="Terrorist Groups",title="Weaponry Used in Terrorist Attacks in Guatemala ")+coord_flip()+scale_fill_discrete(name="Weapon Types", breaks=c(10, 11,13, 5, 6,8,9), labels=c("Vehicle", "Sabotage Equipment", "Unknown", "Firearms", "Explosives","Incendiary", "Melee"))
+  geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")), 
+  position=position_stack(vjust = .5)) + labs(y="Percentage",x="Terrorist Groups",title="Weaponry Used in Terrorist Attacks in Guatemala ") + 
+  coord_flip()+ scale_fill_discrete(name="Weapon Types", 
+  breaks=c(10, 11,13, 5, 6,8,9), labels=c("Vehicle", "Sabotage Equipment", "Unknown", "Firearms", "Explosives","Incendiary", "Melee"))
 ```
 
 ![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
@@ -268,7 +273,12 @@ extra layer of anger and resentment to use that.
 
 ``` r
 GT %>% mutate(country_txt=factor(country_txt, levels = c("Guatemala","El Salvador")),
-              attacktype1=factor(attacktype1, levels=(9:1), labels=(c('Unknown','Unarmed Assault', 'Facility/Infrastructure Attack', 'Hostage Taking (Kidnapping)', 'Hostage Taking (Barricade Incident)','Hijacking', 'Bombing/Explosion', 'Armed Assault', 'Assassination'))), gname=factor(gname, levels = c("Death Squad","Left-Wing Terrorists", "Left-Wing Guerrillas", "Farabundo Marti National Liberation Front (FMLN)"), labels=c('Death Squad', 'L-W Terrorist', 'L-W Guerrillas', "FMLN"))) %>%
+              attacktype1=factor(attacktype1, levels=(9:1), labels=(c('Unknown',
+              'Unarmed Assault', 'Facility/Infrastructure Attack', 'Hostage Taking (Kidnapping)', 'Hostage Taking (Barricade Incident)','Hijacking', 
+              'Bombing/Explosion', 'Armed Assault', 'Assassination'))), 
+              gname=factor(gname, levels = c("Death Squad","Left-Wing Terrorists", 
+                                             "Left-Wing Guerrillas", "Farabundo Marti National Liberation Front (FMLN)"), 
+                           labels=c('Death Squad', 'L-W Terrorist', 'L-W Guerrillas', "FMLN"))) %>%
   group_by(country_txt,gname,attacktype1) %>% summarise(N=n()) %>% ungroup() %>%
   group_by(country_txt,gname) %>% 
   mutate(Total=sum(N),Percent=N/Total,
@@ -281,7 +291,10 @@ GT %>% mutate(country_txt=factor(country_txt, levels = c("Guatemala","El Salvado
 ``` r
 Sums<-Sums[rowSums(is.na(Sums))<.1,] 
 #plot
-ggplot(Sums,aes(x=country_txt,y=Percent,fill=attacktype1))+geom_bar(stat='identity',position = position_stack())+facet_wrap(.~gname)+geom_text(aes(label=Lab),position = position_stack(vjust = .5),size=2)+labs(x="Country", title = "Terrorist Groups and Their Attack Types in Guatemala & El Salvador")+scale_fill_discrete(name="Attack Type")
+ggplot(Sums,aes(x=country_txt,y=Percent,fill=attacktype1)) +
+  geom_bar(stat='identity',position =  position_stack()) + facet_wrap(.~gname) + geom_text(aes(label=Lab), position = position_stack(vjust = .5),size=2) + 
+  labs(x="Country", title = "Terrorist Groups and Their Attack Types in
+       Guatemala & El Salvador") + scale_fill_discrete(name="Attack Type")
 ```
 
 ![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->

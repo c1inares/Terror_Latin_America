@@ -165,7 +165,10 @@ GT %>%
   count(gname, ishostkid)%>%
   group_by(gname) %>% 
   mutate(count=prop.table(n)*100) %>%
-  ggplot(aes(x=gname, y=count, fill=ishostkid))+geom_bar(stat="identity")+ geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")),position=position_stack(vjust = .5))+theme_bw()+labs(y="Percentage",x="Terrorist Groups", title="Percentage of Victims Kidnapped by Terrorist Groups") + coord_flip() +scale_fill_discrete(name="Victim Kidnapped", breaks=c(0,1), labels=c("No", "Yes"))
+  ggplot(aes(x=gname, y=count, fill=ishostkid))+geom_bar(stat="identity")+     geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")),                                       position=position_stack(vjust = .5)) + theme_bw() +
+  labs(y="Percentage",x="Terrorist Groups", title="Percentage of Victims Kidnapped by Terrorist Groups") + 
+  coord_flip() +
+  scale_fill_discrete(name="Victim Kidnapped", breaks=c(0,1), labels=c("No", "Yes"))
 ```
 
 This distribution is incredibly terrifying especially since February 28 Popular League and FARN held hostages or kidnapped people for over half of their attacks. It seems they targeted innocent civilians to get what they wanted. 
@@ -181,8 +184,10 @@ GT %>%
   group_by(gname) %>% 
   mutate(count=prop.table(n)*100) %>%
   ggplot(aes(x=gname, y=count, fill=weaptype1))+geom_bar(stat='identity')+    
-  geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")),position=position_stack(vjust = .5))+
-  labs(y="Percentage",x="Terrorist Groups",title="Weaponry Used in Terrorist Attacks in Guatemala ")+coord_flip()+scale_fill_discrete(name="Weapon Types", breaks=c(10, 11,13, 5, 6,8,9), labels=c("Vehicle", "Sabotage Equipment", "Unknown", "Firearms", "Explosives","Incendiary", "Melee"))
+  geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")), 
+  position=position_stack(vjust = .5)) + labs(y="Percentage",x="Terrorist Groups",title="Weaponry Used in Terrorist Attacks in Guatemala ") + 
+  coord_flip()+ scale_fill_discrete(name="Weapon Types", 
+  breaks=c(10, 11,13, 5, 6,8,9), labels=c("Vehicle", "Sabotage Equipment", "Unknown", "Firearms", "Explosives","Incendiary", "Melee"))
 ```
 
 The most common weapon used in Guatemala is firearms, with explosives coming in second. FP-31 seems like explosives was their weapon of choice, 76.5% of their attacks were explosive attacks. All manners of hurting people are awful, but to choose explosives, I think there's an extra layer of anger and resentment to use that. 
@@ -191,7 +196,12 @@ The most common weapon used in Guatemala is firearms, with explosives coming in 
 
 ```{r}
 GT %>% mutate(country_txt=factor(country_txt, levels = c("Guatemala","El Salvador")),
-              attacktype1=factor(attacktype1, levels=(9:1), labels=(c('Unknown','Unarmed Assault', 'Facility/Infrastructure Attack', 'Hostage Taking (Kidnapping)', 'Hostage Taking (Barricade Incident)','Hijacking', 'Bombing/Explosion', 'Armed Assault', 'Assassination'))), gname=factor(gname, levels = c("Death Squad","Left-Wing Terrorists", "Left-Wing Guerrillas", "Farabundo Marti National Liberation Front (FMLN)"), labels=c('Death Squad', 'L-W Terrorist', 'L-W Guerrillas', "FMLN"))) %>%
+              attacktype1=factor(attacktype1, levels=(9:1), labels=(c('Unknown',
+              'Unarmed Assault', 'Facility/Infrastructure Attack', 'Hostage Taking (Kidnapping)', 'Hostage Taking (Barricade Incident)','Hijacking', 
+              'Bombing/Explosion', 'Armed Assault', 'Assassination'))), 
+              gname=factor(gname, levels = c("Death Squad","Left-Wing Terrorists", 
+                                             "Left-Wing Guerrillas", "Farabundo Marti National Liberation Front (FMLN)"), 
+                           labels=c('Death Squad', 'L-W Terrorist', 'L-W Guerrillas', "FMLN"))) %>%
   group_by(country_txt,gname,attacktype1) %>% summarise(N=n()) %>% ungroup() %>%
   group_by(country_txt,gname) %>% 
   mutate(Total=sum(N),Percent=N/Total,
@@ -199,7 +209,10 @@ GT %>% mutate(country_txt=factor(country_txt, levels = c("Guatemala","El Salvado
 
 Sums<-Sums[rowSums(is.na(Sums))<.1,] 
 #plot
-ggplot(Sums,aes(x=country_txt,y=Percent,fill=attacktype1))+geom_bar(stat='identity',position = position_stack())+facet_wrap(.~gname)+geom_text(aes(label=Lab),position = position_stack(vjust = .5),size=2)+labs(x="Country", title = "Terrorist Groups and Their Attack Types in Guatemala & El Salvador")+scale_fill_discrete(name="Attack Type")
+ggplot(Sums,aes(x=country_txt,y=Percent,fill=attacktype1)) +
+  geom_bar(stat='identity',position =  position_stack()) + facet_wrap(.~gname) + geom_text(aes(label=Lab), position = position_stack(vjust = .5),size=2) + 
+  labs(x="Country", title = "Terrorist Groups and Their Attack Types in
+       Guatemala & El Salvador") + scale_fill_discrete(name="Attack Type")
 ```
 
 It appears Death Squad was equally active in both Central American countries and they continuously used the same types of attacks. Left-Wing Terrorist and Left-Wing Guerrillas both used different attacks based on the country. However despite being 2 separate groups they [L-W Guerrillas & L-W Terrorist] use similar attacks in the same country. I believe this is due to the different environments, groups would commit attacks that would have a bigger impact in the country and among the people. FMLN is hard to discuss considering there's great discrepancies in the number of attacks.
