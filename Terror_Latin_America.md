@@ -158,7 +158,8 @@ for both countries.
 
 ``` r
 GT %>%
-ggplot(aes(country_txt))+geom_bar(fill=c('#56B4E9', '#009E73'))+labs(y="Number of Attacks",x="Country",title="Number of Attacks: El Salvador vs. Guatemala")
+ggplot(aes(country_txt)) + geom_bar(fill=c('#56B4E9', '#009E73')) + 
+  labs(y="Number of Attacks",x="Country",title="Number of Attacks: El Salvador vs. Guatemala")
 ```
 
 ![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
@@ -256,7 +257,7 @@ GT %>%
   mutate(count=prop.table(n)*100) %>%
   ggplot(aes(x=gname, y=count, fill=weaptype1))+geom_bar(stat='identity')+    
   geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")), 
-  position=position_stack(vjust = .5)) + labs(y="Percentage",x="Terrorist Groups",title="Weaponry Used in Terrorist Attacks in Guatemala ") + 
+  position=position_stack(vjust = .5)) + labs(y="Percentage",x= "Terrorist Groups",title="Weaponry Used in Terrorist Attacks in Guatemala ") + 
   coord_flip()+ scale_fill_discrete(name="Weapon Types", 
   breaks=c(10, 11,13, 5, 6,8,9), labels=c("Vehicle", "Sabotage Equipment", "Unknown", "Firearms", "Explosives","Incendiary", "Melee"))
 ```
