@@ -56,7 +56,7 @@ GT$ishostkid<-as.factor(GT$ishostkid)
 GT$kidhijcountry<-as.character(GT$kidhijcountry)
 ```
 
-### Defining our Variables
+### Defining Variables
 
 My variables are as follows:
 
@@ -149,7 +149,7 @@ chisq.test(GS)
     ## data:  GS
     ## X-squared = 1450.9, df = 1, p-value < 2.2e-16
 
-Since the p-value \> .05, we reject the null hypothesis. This indicates
+Since the p-value \< .05, we reject the null hypothesis. This indicates
 there is a significant difference in the frequency of attacks between
 both countries. Let’s dive deeper and visualize the attack frequencies
 for both countries.
@@ -253,11 +253,8 @@ GT %>%
   mutate(count=prop.table(n)*100) %>%
   ggplot(aes(x=gname, y=count, fill=weaptype1))+geom_bar(stat='identity')+    
   geom_text(aes(label=paste0(sprintf("%1.1f",count),"%")),position=position_stack(vjust = .5))+
-  labs(y="Percentage",x="Terrorist Groups",title="Weaponry Used in Terrorist Attacks in Guatemala ")+coord_flip()+scale_fill_discrete(name="Weapon Types", breaks=c(10, 11,13, 5, 6,8,9), labels=c("Vehicle", "Sabotage Equipment", "Unknown", "Firearms", "Explosives","Incendiary", "Melee"))+scale_fill_viridis(discrete=TRUE)
+  labs(y="Percentage",x="Terrorist Groups",title="Weaponry Used in Terrorist Attacks in Guatemala ")+coord_flip()+scale_fill_discrete(name="Weapon Types", breaks=c(10, 11,13, 5, 6,8,9), labels=c("Vehicle", "Sabotage Equipment", "Unknown", "Firearms", "Explosives","Incendiary", "Melee"))
 ```
-
-    ## Scale for fill is already present.
-    ## Adding another scale for fill, which will replace the existing scale.
 
 ![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
@@ -267,7 +264,7 @@ choice, 76.5% of their attacks were explosive attacks. All manners of
 hurting people are awful, but to choose explosives, I think there’s an
 extra layer of anger and resentment to use that.
 
-### Comparing Same Terrorist Group in Each Country
+### Breakdown of Attack Types by Terrorist Group in Guatemala and El Salvador
 
 ``` r
 GT %>% mutate(country_txt=factor(country_txt, levels = c("Guatemala","El Salvador")),
@@ -284,7 +281,7 @@ GT %>% mutate(country_txt=factor(country_txt, levels = c("Guatemala","El Salvado
 ``` r
 Sums<-Sums[rowSums(is.na(Sums))<.1,] 
 #plot
-ggplot(Sums,aes(x=country_txt,y=Percent,fill=attacktype1))+geom_bar(stat='identity',position = position_stack())+facet_wrap(.~gname)+geom_text(aes(label=Lab),position = position_stack(vjust = .5),size=2)+labs(x="Country", title = "Distribution of Terrorist Groups Based on Each Country")+  scale_color_viridis(discrete = TRUE) 
+ggplot(Sums,aes(x=country_txt,y=Percent,fill=attacktype1))+geom_bar(stat='identity',position = position_stack())+facet_wrap(.~gname)+geom_text(aes(label=Lab),position = position_stack(vjust = .5),size=2)+labs(x="Country", title = "Terrorist Groups and Their Attack Types in Guatemala & El Salvador")+scale_fill_discrete(name="Attack Type")
 ```
 
 ![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
@@ -299,7 +296,7 @@ attacks that would have a bigger impact in the country and among the
 people. FMLN is hard to discuss considering there’s great discrepancies
 in the number of attacks.
 
-### Terrorist Attacks over Time
+### Terrorist Attacks over Time (Time Series Plot)
 
 ``` r
 GT2 <- GT %>%
@@ -334,3 +331,9 @@ ggplot(GT2, aes(x = year_month, y = attack_count, color = country, group = count
     ## (`geom_line()`).
 
 ![](Terror_Latin_America_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+From the data, I plotted the frequency of attacks per month (from
+1970-2017) in Guatemala and El Salvador. As anticipated, El Salvador had
+a greater average of attacks than Guatemala. However, I was shocked
+about the huge spike of attacks in Guatemala around 1982. I would like
+to do more research to see what events led to this spike.
