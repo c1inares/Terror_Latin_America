@@ -29,7 +29,7 @@ library(factoextra)
 
 ```{r}
 GT<-read.csv("GT.csv") #upload
-View(GT)
+head(GT)
 ```
 
 ## Preparing Data

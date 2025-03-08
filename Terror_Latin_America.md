@@ -6,33 +6,68 @@ Chelsea Linares
 <img src="Voces-Inocentes.jpeg" style="display: block; margin: auto;" />
 
 ``` r
-GT<-read.csv("~/downloads/globalterrorismdb_0718dist.csv")
+GT<-read.csv("GT.csv") #upload
+head(GT)
 ```
 
-## Clean-Up Data
+    ##        eventid iyear imonth iday extended country country_txt    provstate
+    ## 1 197001200001  1970      1   20        0      83   Guatemala    Guatemala
+    ## 2 197003060001  1970      3    6        1      83   Guatemala    Guatemala
+    ## 3 197003310001  1970      3   31        1      83   Guatemala    Guatemala
+    ## 4 197007110001  1970      7   11        0      83   Guatemala      Unknown
+    ## 5 197101210001  1971      1   21        0      83   Guatemala      Unknown
+    ## 6 197211050001  1972     11    5        0      61 El Salvador San Salvador
+    ##             city multiple success attacktype1             attacktype1_txt
+    ## 1 Guatemala City        0       1           1               Assassination
+    ## 2 Guatemala City        0       1           6 Hostage Taking (Kidnapping)
+    ## 3 Guatemala City        0       1           6 Hostage Taking (Kidnapping)
+    ## 4        Unknown        0       1           6 Hostage Taking (Kidnapping)
+    ## 5        Unknown        0       1           2               Armed Assault
+    ## 6   San Salvador        0       1           3           Bombing/Explosion
+    ##   targtype1           targtype1_txt
+    ## 1         7 Government (Diplomatic)
+    ## 2         7 Government (Diplomatic)
+    ## 3         7 Government (Diplomatic)
+    ## 4         1                Business
+    ## 5         8 Educational Institution
+    ## 6         6     Airports & Aircraft
+    ##                                          target1
+    ## 1                      Bodyguard, British Consul
+    ## 2  Sean Holley, U.S. labor attache, U.S. embassy
+    ## 3 Count Karl Von Spreti, ambassador to Guatemala
+    ## 4                                    businessman
+    ## 5                                    U.S. School
+    ## 6                      Pan Am Main Ticket Office
+    ##                                   gname weaptype1 weaptype1_txt
+    ## 1                               Unknown        13       Unknown
+    ## 2 Rebel Armed Forces of Guatemala (FAR)         5      Firearms
+    ## 3 Rebel Armed Forces of Guatemala (FAR)        13       Unknown
+    ## 4 Rebel Armed Forces of Guatemala (FAR)        13       Unknown
+    ## 5                               Unknown         5      Firearms
+    ## 6                               Unknown         6    Explosives
+    ##                    weapsubtype1_txt        weapdetail property
+    ## 1                                                            0
+    ## 2 Automatic or Semi-Automatic Rifle   Submachine guns        0
+    ## 3                                                            0
+    ## 4                                                            0
+    ## 5 Automatic or Semi-Automatic Rifle Automatic firearm        1
+    ## 6            Unknown Explosive Type         Explosive        1
+    ##                propextent_txt ishostkid
+    ## 1                                     0
+    ## 2                                     1
+    ## 3                                     1
+    ## 4                                     1
+    ## 5                     Unknown         0
+    ## 6 Minor (likely < $1 million)         0
 
-Our data is nationwide so we will tidy it to only display attacks that
-happened in Guatemala and El Salvador. Also, there’s around 135
-variables, many of which are redundant or unnecessary for our analysis
-so we will scrape them. Just to make our visuals clearer, I merged some
-of the terrorist groups together into an ‘Other’ category because there
-were few times this group attacked compared to other groups. At the end,
-we remain with 26 variables.
+## Preparing Data
+
+While our data has been cleaned through SQL, we need to ensure
+categorical variables are treated as factors and text-based data is
+treated as categorical data. This is crucial so our analysis is
+accurate.
 
 ``` r
-#only use data from Guatemala and El Salvador
-#region 2= carribean and latin america
-GT<-GT %>%
-  filter(region=='2', country_txt=='Guatemala'|country_txt=='El Salvador')
-
-#removing columns with less than 10% data
-GT<-GT[ , colSums(is.na(GT))<.1] 
-
-#only keep top 15 terrorist groups, the rest lump into an other category
-GT$gname<- fct_lump_min(GT$gname, min=15, other_level = "Other")
-
-GT<-GT[c(1,2,3,4,6,8,9,12,13,23,24,26,27,30,31,33,45,57,58,59,66,67,68,70,72,74)] #predictors to keep
-
 #turn into characters and factor
 GT$eventid<-as.factor(GT$eventid)
 GT$imonth<-as.factor(GT$imonth)
@@ -53,7 +88,6 @@ GT$gname<-as.factor(GT$gname)
 GT$weaptype1<-as.factor(GT$weaptype1)
 GT$property<-as.factor(GT$property)
 GT$ishostkid<-as.factor(GT$ishostkid)
-GT$kidhijcountry<-as.character(GT$kidhijcountry)
 ```
 
 ### Defining Variables
@@ -126,12 +160,6 @@ but \<1 billion), Minor (likely \<1 million), or Unknown.
 `ishostkid`: whether or not the victim was taken as hostage or kidnapped
 during the incident.
 
-`kidhijcountry`: the country in which the hostage taking or hijacking
-was resolved or ended.
-
-`hostkidoutcome_txt`: the outcome of hostages or kidnap victims if there
-are any during the attacks.
-
 ## Visualizations
 
 Let’s do a chi-square test to see if the attack frequencies between
@@ -147,7 +175,7 @@ chisq.test(GS)
     ##  Chi-squared test for given probabilities
     ## 
     ## data:  GS
-    ## X-squared = 1450.9, df = 1, p-value < 2.2e-16
+    ## X-squared = 1702.4, df = 1, p-value < 2.2e-16
 
 Since the p-value \< .05, we reject the null hypothesis. This indicates
 there is a significant difference in the frequency of attacks between
@@ -172,17 +200,17 @@ GT%>%
 
     ##                                               gname    n
     ## 1        Armed Forces of National Resistance (FARN)   38
-    ## 2                                       Death Squad   58
-    ## 3  Farabundo Marti National Liberation Front (FMLN) 3330
+    ## 2                                       Death Squad   56
+    ## 3  Farabundo Marti National Liberation Front (FMLN) 3329
     ## 4          February 28 Popular League (El Salvador)   15
     ## 5                              Left-Wing Guerrillas   18
     ## 6                              Left-Wing Terrorists   17
-    ## 7                  People's Liberation Forces (FPL)  167
-    ## 8   People's Revolutionary Army (ERP) (El Salvador)   64
-    ## 9                  Popular Revolutionary Bloc (BPR)   38
-    ## 10                 Secret Anti-Communist Army (ESA)    6
-    ## 11                                          Unknown 1458
-    ## 12                                            Other  111
+    ## 7                                             Other  102
+    ## 8                  People's Liberation Forces (FPL)  167
+    ## 9   People's Revolutionary Army (ERP) (El Salvador)   64
+    ## 10                 Popular Revolutionary Bloc (BPR)   38
+    ## 11                 Secret Anti-Communist Army (ESA)    6
+    ## 12                                          Unknown 1429
 
 ``` r
 GT%>%
@@ -192,18 +220,18 @@ GT%>%
 
     ##                                                  gname    n
     ## 1                    31 January People's Front (FP-31)   17
-    ## 2                                          Death Squad   69
+    ## 2                                          Death Squad   45
     ## 3     Farabundo Marti National Liberation Front (FMLN)    5
     ## 4                         Guatemalan Labor Party (PGT)   22
-    ## 5       Guatemalan National Revolutionary Unity (URNG)  131
-    ## 6                     Guerrilla Army of the Poor (EGP)  155
-    ## 7                                 Left-Wing Guerrillas   14
+    ## 5       Guatemalan National Revolutionary Unity (URNG)   85
+    ## 6                     Guerrilla Army of the Poor (EGP)  153
+    ## 7                                 Left-Wing Guerrillas   13
     ## 8                                 Left-Wing Terrorists    8
-    ## 9                Rebel Armed Forces of Guatemala (FAR)   36
-    ## 10 Revolutionary Organization of People in Arms (ORPA)  115
-    ## 11                    Secret Anti-Communist Army (ESA)   13
-    ## 12                                             Unknown 1413
-    ## 13                                               Other   52
+    ## 9                                                Other   41
+    ## 10               Rebel Armed Forces of Guatemala (FAR)   36
+    ## 11 Revolutionary Organization of People in Arms (ORPA)  115
+    ## 12                    Secret Anti-Communist Army (ESA)   13
+    ## 13                                             Unknown 1253
 
 With this bar graph, we see that from 1970-2017 there were significantly
 more attacks in El Salvador than Guatemala. El Salvador had more than
